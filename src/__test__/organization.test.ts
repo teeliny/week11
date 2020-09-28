@@ -1,7 +1,18 @@
 import app from "../../app";
+import mongoose from "mongoose";
 import supertest from "supertest";
 
 const request = supertest(app);
+
+beforeAll(done => {
+  done()
+})
+
+afterAll(done => {
+  // Closing the DB connection allows Jest to exit successfully.
+  mongoose.connection.close()
+  done()
+})
 describe("Test all routes", () => {
   it("Test Status code for Correct Query", async () => {
     try {
