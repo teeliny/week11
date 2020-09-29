@@ -6,6 +6,11 @@
     "start": "nodemon ./bin/www",
     "test": "jest"
   },
+  "jest": {
+         "testMatch": [
+             "**/?(*.)+(spec|test).[t]s?(x)"
+         ]
+    },
   "dependencies": {
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.10.4",
