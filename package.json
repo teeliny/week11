@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "build": "bash -e scripts/build.sh",
     "test": "jest"
   },
   "jest": {
