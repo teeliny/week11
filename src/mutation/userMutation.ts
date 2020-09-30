@@ -7,7 +7,7 @@ import {
     GraphQLID, 
 } from "graphql";
 import { encryptPassword, generateToken, decryptPassword } from "../utilities/encrypt";
-import { userIdJoi, signUpJoi, logInJoi } from "../interface/joiValidation";
+import { userIdJoi, signUpJoi, logInJoi, organizationJoi, emailJoi } from "../interface/joiValidation";
 
 export function addUser() {
     return {
@@ -24,9 +24,10 @@ export function addUser() {
             const { error } = signUpJoi(args);
             if (error) throw new Error(error.details[0].message);
 
-            const findUser = await Users.find({ email: args.email })
+            const findUser = await Users.find({ email: args.email });
+            console.log(findUser);
             if (findUser.length > 0) {
-                return "email already exist."
+                throw Error("email already exist.");
             }
             const password = args.user_password;
             args.user_password = encryptPassword(password);
@@ -78,17 +79,17 @@ export function deleteUser() {
     return {
         type: UserType,
         args: {
-            id: { type: new GraphQLNonNull(GraphQLID) },
+            email: { type: new GraphQLNonNull(GraphQLString) },
         },
         async resolve(_parent, args) {
-            const { error } = userIdJoi(args);
+            const { error } = emailJoi(args);
             if (error) throw new Error(error.details[0].message);
 
-            const id = args.id;
-            if (!id) return ('Provide a valid Id')
-            const findUser = Users.find({ _id: args.id })
+            const userEmail = args.email;
+            if (!userEmail) return ('Provide a valid Email')
+            const findUser = await Users.find({ email: args.email });
             if (!findUser[0]) throw Error("User not found");
-            await Users.findByIdAndDelete(id);
+            return await Users.findOneAndDelete({ email: args.email });
         },
     }
 }

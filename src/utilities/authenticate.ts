@@ -14,6 +14,7 @@ export async function verifyToken(req) {
 
     const token = generateToken(findUser);
     findUser["token"] = token;
+    // console.log(token);
     req.headers.authorization = token;
     
     if (token === undefined) {

@@ -35,6 +35,76 @@ describe("Test all routes", () => {
       console.log(`error ${error.toString()}`);
     }
   });
+
+  it("Get all existing users in the database", async (done) => {
+    request
+      .post("/graphql")
+      .send({ query: "{allUser{email}}" })
+      .set("Accept", "application.json")
+      .expect("Content-Type", /json/)
+      .end(function (err, res) {
+        expect(res.body).toBeInstanceOf(Object);
+        done();
+      });
+  });
+
+  it("Add new User", async (done) => {
+    request
+      .post("/graphql")
+      .send({
+        query:
+          'mutation{addUser(first_name: "Mitchel", last_name: "Obi", user_name: "rivers", user_password: "123456", email: "mitchelobi@gmail.com") { id first_name email }}',
+      })
+      .set("Accept", "application.json")
+      .expect("Content-Type", /json/)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).toBeInstanceOf(Object);
+        let val = res.body.data.addUser;
+        expect(val).toHaveProperty("first_name", "Mitchel")
+        expect(val).toHaveProperty("email", "mitchelobi@gmail.com");
+        done();
+      });
+  });
+
+  it("Sign in An Existing User", async (done) => {
+    request
+      .post("/graphql")
+      .send({
+        query:
+          'mutation{signIn(user_password: "123456", email: "mitchelobi@gmail.com") { id first_name email }}',
+      })
+      .set("Accept", "application.json")
+      .expect("Content-Type", /json/)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).toBeInstanceOf(Object);
+        let val = res.body.data.signIn;
+        expect(val).toHaveProperty("first_name", "Mitchel")
+        expect(val).toHaveProperty("email", "mitchelobi@gmail.com");
+        done();
+      });
+  });
+
+  it("Delete an Existing User", async (done) => {
+    request
+      .post("/graphql")
+      .send({
+        query:
+          'mutation{deleteUser(email: "mitchelobi@gmail.com") { id first_name email }}',
+      })
+      .set("Accept", "application.json")
+      .expect("Content-Type", /json/)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).toBeInstanceOf(Object);
+        let val = res.body.data.deleteUser;
+        expect(val).toHaveProperty("first_name", "Mitchel")
+        expect(val).toHaveProperty("email", "mitchelobi@gmail.com");
+        done();
+      });
+  });
+
   it("Gets all organizations", async (done) => {
     request
       .post("/graphql")
