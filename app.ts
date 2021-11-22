@@ -27,7 +27,7 @@ app.use('/graphql', graphqlHTTP(async (req) => ({
 })))
 
 mongoose
-  .connect("mongodb+srv://teeliny:Taiwo@53@cluster0.o6b0k.mongodb.net/organizationDB", {
+  .connect("mongodb+srv://teeliny:Lincoln@53@cluster0.o6b0k.mongodb.net/organizationDB?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
